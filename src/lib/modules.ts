@@ -1,0 +1,8 @@
+export const modules = [
+  { slug: "people", title: "Nhân sự & tài khoản", audience: "ADMIN", description: "Idol đăng ký, Admin duyệt và phân về vận hành.", tasks: ["Đăng nhập Google; tài khoản mới ở trạng thái chờ duyệt", "Admin tạo tài khoản vận hành", "Lưu lịch sử phân công và khóa tài khoản"] },
+  { slug: "schedule", title: "Lịch & phòng live", audience: "VẬN HÀNH · IDOL", description: "Đăng ký lịch, tìm phòng và duyệt mượn phòng.", tasks: ["Chủ phòng duyệt yêu cầu mượn", "Ưu tiên một phòng đủ thời gian, sau đó đề xuất chuyển phòng", "Kiểm tra trùng lịch và thời gian chuyển phòng"] },
+  { slug: "devices", title: "Điện thoại", audience: "VẬN HÀNH · IDOL", description: "Quét QR nhận máy, trả về tủ chung và chờ xác nhận.", tasks: ["Máy đúng phòng tự chấp nhận khi khả dụng", "Máy khác phòng cần vận hành quản lý máy duyệt", "Máy chỉ sẵn sàng sau khi quản lý xác nhận trả"] },
+  { slug: "attendance", title: "Check-in / out", audience: "VẬN HÀNH · IDOL", description: "Ảnh phòng đầu ca, cuối ca và yêu cầu check-out bù.", tasks: ["Tách lượt nhận máy và lượt sử dụng phòng", "Ảnh phòng lưu riêng tư", "Check-out bù giữ thời gian đề nghị, thời gian gửi và người duyệt"] },
+  { slug: "requests", title: "Tất cả yêu cầu", audience: "ADMIN · VẬN HÀNH", description: "Theo dõi người duyệt, tiến độ và lịch sử xử lý.", tasks: ["Admin xem và xử lý tất cả yêu cầu", "Vận hành chỉ xử lý đúng phạm vi phụ trách", "Ghi lại quyết định và chống duyệt hai lần"] },
+  { slug: "reports", title: "Số liệu & Excel", audience: "THEO PHÂN QUYỀN", description: "Nhập số liệu theo ngày, đối soát và xem kết quả.", tasks: ["Xem trước, báo lỗi trước khi công bố", "Nhập lại cùng ngày không cộng đôi", "Idol chỉ xem cá nhân; vận hành xem nhóm được phân công"] },
+] as const;

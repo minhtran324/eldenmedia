@@ -1,0 +1,111 @@
+import type { DiamondReportRow, DiamondTeamTotal } from "@/lib/diamonds";
+import type { TrialIdol, TrialDay, TrialBooking } from "@/lib/trial-live";
+import type { OperationRow, OpenDevice } from "@/lib/operations-flow";
+// Typed contract. Extend alongside migrations; generate full types from Supabase later.
+export type WeeklyDay = { date: string; mode: "work" | "off" | "existing" | "past"; shifts: Shift[] };
+export type WeeklyRegistrationRecord = { id: string; idol_id: string; week_start: string; days: WeeklyDay[]; status: string; submitted_at: string };
+export type LateSchedulePermission = { id: string; idol_id: string; week_start: string; reason: string; status: string; revision: number; created_at: string; decided_by: string | null; decision_reason: string | null; used_at: string | null };
+export type HomepagePost = { id: string; revision: number; kind: 'poster' | 'announcement' | 'event'; title: string; body: string; image_path: string | null; link_url: string | null; audience: Role[]; status: 'draft' | 'published' | 'archived'; publish_from: string; publish_until: string | null; event_starts_at: string | null; event_ends_at: string | null; location: string | null; pinned: boolean; sort_order: number; updated_at: string };
+export type ResourceStatus = "available" | "maintenance" | "inactive";
+export type Floor = { id: string; code: string; name: string; sort_order: number; version: number };
+export type Room = { id: string; code: string; name: string; floor_id: string | null; room_type: "regular" | "studio"; manager_id: string; status: ResourceStatus; qr_token: string; version: number };
+export type Device = { id: string; code: string; assigned_room_id: string | null; manager_id: string; status: ResourceStatus; qr_token: string; version: number };
+export type Shift = { start_hour: number; end_hour: number };
+export type RoomSlot = { hour: number; room_id: string };
+export type ScheduleRequest = { id: string; kind: string; status: string; subject_idol_id: string; daily_plan_id: string | null; revision: number; created_at: string; decision_reason: string | null; details: { work_date: string; shifts: Shift[]; rooms?: RoomSlot[]; prepared_by?: string; reason?: string; plan_version: number } };
+export type DayPlan = { id: string; idol_id: string; work_date: string; shift_count: number; status: string; version: number };
+export type LiveSession = { id: string; idol_id: string; daily_plan_id: string; starts_at: string; ends_at: string; status: string };
+export type RoomSegment = { id: string; session_id: string; room_id: string; starts_at: string; ends_at: string; status: string };
+export type BorrowSummary = { id: string; revision: number; room_code: string; work_date: string; hours: number[]; created_at: string };
+export type RoomVisit = { id: string; segment_id: string; room_id: string; idol_id: string; checked_in_at: string; checked_out_at: string | null; late_seconds: number; before_photo_path: string; after_photo_path: string | null; checkout_reason: string | null; checkin_note: string | null };
+export type VisitPhoto = { id: string; visit_id: string; phase: string; storage_path: string; expires_at: string; deleted_at: string | null };
+export type CaptureTicket = { id: string; path: string; scanned_at: string };
+export type DeviceRequestSummary = { id: string; revision: number; kind: string; device_code: string; idol_name: string; created_at: string };
+export type OperationalLoan = { id: string; device_code: string; idol_name: string; checked_out_at: string; return_requested_at: string | null };
+export type Role = "admin" | "operator" | "idol";
+export type AccountStatus = "pending" | "active" | "suspended";
+export type Profile = {
+  id: string; full_name: string; nickname: string | null; phone: string | null;
+  birth_date: string | null; joined_on: string | null; avatar_path: string | null;
+  role: Role; status: AccountStatus; created_at: string;
+};
+export type TikTokAccount = { id: string; idol_id: string; platform: "TikTok"; external_id: string; username: string | null; nickname: string | null; identity_valid_from: string };
+export type Member = Omit<Profile, "created_at" | "avatar_path"> & {
+  email: string; operator_id: string | null; operator_name: string | null; total_count: number;
+};
+export type OperatorInvite = {
+  id: string; email: string; full_name: string; status: "pending" | "accepted" | "revoked";
+  created_at: string; created_by: string; accepted_by: string | null; accepted_at: string | null;
+};
+type Table<Row> = { Row: Row; Insert: Partial<Row>; Update: Partial<Row>; Relationships: [] };
+export type Database = {
+  public: {
+    Tables: { weekly_registrations: Table<WeeklyRegistrationRecord>; late_schedule_permissions: Table<LateSchedulePermission>; platform_accounts: Table<TikTokAccount>; import_batches: Table<{ id: string; data_date: string; file_path: string; file_hash: string; status: string; created_at: string; published_at: string | null }>; diamond_import_rows: Table<{ batch_id: string; row_number: number; username: string; diamonds: number; account_id: string | null }>; daily_metrics: Table<{ platform_account_id: string; metric_date: string; diamonds: number | null; import_batch_id: string }>; homepage_posts: Table<HomepagePost>; room_visits: Table<RoomVisit>; room_visit_photos: Table<VisitPhoto>; room_capture_tickets: Table<{ id: string; idol_id: string; segment_id: string; phase: string; scanned_at: string; expires_at: string; photo_path: string; used_at: string | null; visit_id: string | null }>; idol_assignments: Table<{ id: string; idol_id: string; operator_id: string; starts_at: string; ends_at: string | null }>; profiles: Table<Profile>; operator_access_invites: Table<OperatorInvite>; floors: Table<Floor>; rooms: Table<Room>; devices: Table<Device>; requests: Table<ScheduleRequest>; daily_plans: Table<DayPlan>; live_sessions: Table<LiveSession>; room_segments: Table<RoomSegment>; company_settings: Table<{ id: boolean; opening_hour: number; closing_hour: number; ranking_period: "day" | "week" | "month"; operator_can_view_diamonds: boolean; idol_can_view_diamonds: boolean }>; notifications: Table<{ id: string; title: string; body: string; created_at: string; recipient_id: string; event_type: string; category: string; read_at: string | null; priority: "normal" | "important"; subject_idol_id: string | null; work_date: string | null }> };
+    Views: { [_ in never]: never };
+    Functions: {
+      register_trial_live: { Args: { trainee_name: string; days: TrialDay[]; trainee_id?: string | null; target_operator?: string | null }; Returns: string };
+      cancel_trial_live: { Args: { booking_id: string; expected_revision: number }; Returns: undefined };
+      trial_live_roster: { Args: Record<string, never>; Returns: TrialIdol[] };
+      trial_live_calendar: { Args: { first_day: string; last_day: string }; Returns: TrialBooking[] };
+      diamond_report_rows: { Args: { report_date?: string }; Returns: DiamondReportRow[] };
+      diamond_team_totals: { Args: { report_date?: string }; Returns: DiamondTeamTotal[] };
+      idol_operations_day: { Args: { day: string }; Returns: OperationRow[] };
+      my_open_device: { Args: Record<string, never>; Returns: OpenDevice | null };
+      choose_personal_device: { Args: { segment: string }; Returns: undefined };
+      skip_room_turn: { Args: { segment: string; reason: string }; Returns: undefined };
+      set_room_handover: { Args: { segment: string; ready: boolean; reason: string }; Returns: undefined };
+      submit_weekly_schedule: { Args: { week: string; days: WeeklyDay[] }; Returns: string };
+      request_late_schedule: { Args: { week: string; reason: string }; Returns: string };
+      review_late_schedule: { Args: { permission_id: string; expected_revision: number; approve: boolean; reason: string }; Returns: undefined };
+      weekly_registration_access: { Args: { week: string }; Returns: boolean };
+      room_availability_grid: { Args: { day: string; exclude_plan?: string | null }; Returns: { room_id: string; slot_hour: number }[] };
+      stage_diamond_import: { Args: { day: string; filename: string; digest: string; entries: { row_number: number; username: string; diamonds: number }[] }; Returns: string };
+      map_diamond_username: { Args: { batch: string; source_row: number; idol: string; expected_username: string | null; allow_rename: boolean }; Returns: undefined };
+      publish_diamond_import: { Args: { batch: string; expected_current: string | null; confirm_replace: boolean }; Returns: undefined };
+      revert_diamond_import: { Args: { batch: string }; Returns: undefined };
+      delete_staged_import_batch: { Args: { batch: string }; Returns: undefined };
+      change_import_batch_date: { Args: { batch: string; new_day: string }; Returns: undefined };
+      update_diamond_row_amount: { Args: { batch: string; source_row: number; new_diamonds: number }; Returns: undefined };
+      set_idol_batch_diamonds: { Args: { batch: string; idol: string; new_diamonds: number }; Returns: undefined };
+      my_notification_counts: { Args: Record<string, never>; Returns: { category: string; unread_count: number }[] };
+      mark_notification_read: { Args: { notification_id: string }; Returns: undefined };
+      homepage_ranking: { Args: { period_kind?: string; period_date?: string }; Returns: { rank_position: number; idol_id: string; display_name: string; avatar_path: string | null; period_start: string; period_end: string; data_through: string | null }[] };
+      homepage_diamond_ranking: { Args: { period_kind?: string; period_date?: string }; Returns: { rank_position: number; idol_id: string; display_name: string; username: string | null; avatar_path: string | null; period_start: string; period_end: string; data_through: string | null; diamonds_total: string | null; company_diamonds_total: string | null }[] };
+      diamond_monthly_report: { Args: { report_date?: string }; Returns: { platform_account_id: string; idol_id: string; display_name: string; username: string | null; day_diamonds: string | null; month_diamonds: string | null; data_through: string; recorded_days: number }[] };
+      latest_published_diamond_date: { Args: Record<string, never>; Returns: string | null };
+      diamond_import_month_preview: { Args: { batch: string }; Returns: { row_number: number; month_before: string | null; month_after: string | null }[] };
+      homepage_birthdays_today: { Args: Record<string, never>; Returns: { person_id: string; display_name: string; role: Role; avatar_path: string | null }[] };
+      admin_set_homepage_options: { Args: { ranking: string; reminders: string }; Returns: undefined };
+      admin_set_diamond_visibility: { Args: { operator_view: boolean; idol_view: boolean }; Returns: undefined };
+      admin_save_homepage_post: { Args: { post_id: string | null; expected_revision: number | null; payload: Record<string, unknown> }; Returns: string };
+      scan_device: { Args: { segment: string; qr: string }; Returns: { status: string; id: string } };
+      request_device_return: { Args: { qr: string }; Returns: string };
+      review_device: { Args: { request_id: string; expected_revision: number; approve: boolean; reason: string }; Returns: undefined };
+      device_request_inbox: { Args: Record<string, never>; Returns: DeviceRequestSummary[] };
+      operational_loans: { Args: Record<string, never>; Returns: OperationalLoan[] };
+      begin_room_capture: { Args: { segment: string; qr: string; phase: string }; Returns: CaptureTicket };
+      finish_room_capture: { Args: { ticket_id: string; note: string }; Returns: string };
+      submit_schedule: { Args: { target_idol: string; day: string; shifts: Shift[]; cancel_day: boolean; reason: string }; Returns: string };
+      prepare_schedule: { Args: { request_id: string; expected_revision: number; room_slots: RoomSlot[] }; Returns: string };
+      review_schedule: { Args: { request_id: string; expected_revision: number; approve: boolean; reason: string }; Returns: string };
+      room_borrow_inbox: { Args: Record<string, never>; Returns: BorrowSummary[] };
+      room_availability: { Args: { day: string; exclude_plan?: string | null }; Returns: { room_id: string; slot_hour: number }[] };
+      admin_save_resource: { Args: { resource_kind: string; payload: Record<string, string | number | null> }; Returns: string };
+      complete_my_onboarding: { Args: Record<string, never>; Returns: undefined };
+      admin_create_operator_access: { Args: { operator_email: string; operator_name: string }; Returns: string };
+      admin_revoke_operator_access: { Args: { invite_id: string }; Returns: undefined };
+      admin_assign_idol: { Args: { target_idol: string; target_operator: string }; Returns: undefined };
+      admin_set_member_status: { Args: { member_id: string; new_status: AccountStatus; reason: string }; Returns: undefined };
+      admin_members: { Args: { search_text?: string; page_number?: number; page_size?: number }; Returns: Member[] };
+      update_my_profile: { Args: { display_name: string; idol_nickname: string; phone_number: string; date_of_birth: string | null }; Returns: undefined };
+      update_my_profile_with_tiktok: { Args: { display_name: string; idol_username: string; phone_number: string; date_of_birth: string | null }; Returns: undefined };
+      my_operator_summary: { Args: Record<string, never>; Returns: { operator_id: string; full_name: string }[] };
+      app_connection_status: { Args: Record<string, never>; Returns: { application: string; schema_version: string } };
+    };
+    Enums: { app_role: Role; account_status: AccountStatus };
+    CompositeTypes: { [_ in never]: never };
+  };
+};
+
+
+

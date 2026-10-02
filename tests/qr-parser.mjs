@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { parseEldenQr } from '../src/lib/qr.ts';
+const uuid='00000000-0000-4000-8000-000000000001';
+assert.deepEqual(parseEldenQr(`elden:v1:room:${uuid}`),{kind:'room',token:uuid});
+assert.deepEqual(parseEldenQr(`elden:v1:device:${uuid}`),{kind:'device',token:uuid});
+assert.equal(parseEldenQr(`https://attacker.example/${uuid}`),null);
+assert.equal(parseEldenQr(`elden:v2:room:${uuid}`),null);
+assert.equal(parseEldenQr(`elden:v1:admin:${uuid}`),null);
+assert.equal(parseEldenQr(`elden:v1:device:${uuid}:extra`),null);
+assert.equal(parseEldenQr('elden:v1:room:not-a-uuid'),null);
+assert.equal(parseEldenQr(null),null);
+assert.equal(parseEldenQr('x'.repeat(1000)),null);
+console.log('PASS 9 QR payload validation assertions');

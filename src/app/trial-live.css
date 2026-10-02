@@ -1,0 +1,43 @@
+.trial-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.trial-section-title { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; }
+.trial-section-title h2, .trial-section-title h3 { margin: 6px 0 0; }
+.trial-person-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); gap: 18px; }
+.trial-person-grid label, .trial-day-card label { display: grid; gap: 8px; font-size: 13px; font-weight: 600; }
+.trial-person-grid input, .trial-person-grid select, .trial-day-card input, .trial-day-card select, .trial-date-filter input {
+  width: 100%; min-width: 0; min-height: 42px; padding: 10px 12px; border: 1px solid #cbdce9; border-radius: 9px;
+  font: inherit; font-size: 14px; color: #16324f; background: #fff;
+}
+.trial-date-filter input { width: auto; }
+.trial-register input:focus-visible, .trial-register select:focus-visible { outline: 2px solid #0284c7; outline-offset: 2px; }
+.trial-progress { padding: 12px 22px; border-radius: 18px; background: #e0f2fe; color: #0369a1; display: grid; gap: 2px; text-align: center; }
+.trial-progress strong { font-size: 30px; line-height: 1.1; }
+.trial-progress small { font-size: 17px; opacity: .65; }
+.trial-progress span { font-size: 11px; }
+.trial-day-strip { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(100%,195px),1fr)); gap: 14px; margin-bottom: 24px; }
+.trial-day-card { display: grid; align-content: start; gap: 15px; padding: 18px; border: 1px solid #dce8f3; border-radius: 16px; background: #f8fbff; }
+.trial-day-active { border-color: #0284c7; box-shadow: 0 0 0 2px #e0f2fe; background: white; }
+.trial-day-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.trial-badge { display: inline-block; width: max-content; max-width: 100%; color: #0369a1; background: #e0f2fe; border-radius: 7px; padding: 3px 7px; font-size: 10px; font-weight: 700; }
+.trial-inline-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.trial-room-picker { padding-top: 20px; border-top: 1px solid #e2e8f0; }
+.trial-submit-bar { display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center; padding: 20px; margin-top: 20px; border-radius: 14px; background: #f0f9ff; }
+.trial-submit-bar p { margin-bottom: 0; }
+.trial-register, .trial-calendar { margin-bottom: 22px; }
+.trial-calendar-table { width: 100%; border-collapse: collapse; }
+.trial-calendar-table th, .trial-calendar-table td { padding: 14px 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+.trial-calendar-table td:first-child .trial-badge { display: block; margin-top: 5px; }
+.trial-calendar-table td { vertical-align: middle; }
+.trial-status { white-space: nowrap; font-size: 12px; }
+.trial-status-approved { color: #047857; }
+.trial-status-pending { color: #b45309; }
+.trial-status-rejected { color: #b91c1c; }
+.trial-status-cancelled { color: #64748b; }
+.trial-date-filter, .trial-date-filter form { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.trial-date-filter { justify-content: space-between; margin-bottom: 20px; }
+@media (max-width: 640px) {
+  .trial-day-strip { grid-template-columns: 1fr; }
+  .trial-submit-bar .btn { width: 100%; }
+  .trial-calendar .table-wrap { overflow-x: auto; }
+  .trial-calendar-table { min-width: 690px; }
+}
+.trial-register-shortcut { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 18px; margin-bottom: 24px; border: 1px solid #cce7f6; border-radius: 16px; background: #f1f9ff; }

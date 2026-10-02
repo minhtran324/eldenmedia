@@ -1,0 +1,12 @@
+node_modules/
+.pnpm-store/
+.next/
+out/
+.env*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+.vercel/
+*.log
+.tools/
+public/sw.js

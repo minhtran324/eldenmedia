@@ -1,0 +1,25 @@
+.install-page { width: min(1020px, 100%); margin: 0 auto; padding: 24px 20px max(28px, env(safe-area-inset-bottom)); }
+.install-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.install-header .brand-title { color: var(--ink); }
+.install-primary { margin-bottom: 20px; }
+.install-primary h1 { font-size: clamp(25px, 5vw, 36px); line-height: 1.25; max-width: 650px; }
+.install-app-mark { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 16px; background: #12392f; color: #d8eea3; font-size: 44px; font-weight: 800; margin-bottom: 16px; }
+.install-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.install-grid h2 { font-size: 20px; }
+.install-grid ol { padding-left: 24px; }
+.install-grid li { margin: 10px 0; }
+.pwa-status { margin-bottom: 18px; }
+.pwa-notice { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid var(--line-ocean); background: var(--surface-ocean); margin-bottom: 10px; }
+.pwa-notice p { font-size: 13px; margin: 4px 0 0; }
+.pwa-offline { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
+.pwa-login-link { display: inline-block; margin-top: 16px; font-size: 14px; color: var(--primary-hover); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 640px) {
+  .install-page { padding: 16px 12px max(20px, env(safe-area-inset-bottom)); }
+  .install-grid { grid-template-columns: 1fr; }
+  .install-header { flex-wrap: wrap; }
+  .pwa-notice .btn { width: 100%; }
+}
+@media (display-mode: standalone) {
+  .workspace-main { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+  .sidebar { padding-bottom: env(safe-area-inset-bottom); }
+}

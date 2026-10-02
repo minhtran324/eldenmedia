@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import { suggestRooms, weekStart, validDate } from '../src/lib/scheduling.ts';
+const shifts=[{start_hour:9,end_hour:14}], rooms=[{id:'A',manager_id:'op'},{id:'B',manager_id:'other'},{id:'C',manager_id:'op'}];
+const free=(id,hours)=>hours.map(slot_hour=>({room_id:id,slot_hour}));
+assert.equal(weekStart('2026-09-27'),'2026-09-21');
+assert.equal(weekStart('2026-09-28'),'2026-09-28');
+assert.equal(validDate('2026-02-30'),false);
+assert.equal(validDate('2028-02-29'),true);
+let result=suggestRooms(shifts,rooms,[...free('A',[9,10]),...free('C',[11,12,13]),...free('B',[9,10,11,12,13])],'op');
+assert.deepEqual(result.map(s=>s.room_id),['B','B','B','B','B'],'one continuous foreign room beats fragmented own rooms');
+result=suggestRooms(shifts,rooms,[...free('A',[9,10]),...free('C',[11,12,13])],'op');
+assert.deepEqual(result.map(s=>s.room_id),['A','A','C','C','C']);
+assert.equal(suggestRooms(shifts,rooms,free('A',[9,10,12,13]),'op'),null);
+result=suggestRooms(shifts,rooms,[...free('A',[9,10,11,12,13]),...free('B',[9,10,11,12,13])],'op');
+assert.ok(result.every(s=>s.room_id==='A'));
+result=suggestRooms([{start_hour:9,end_hour:11},{start_hour:15,end_hour:18}],rooms,[...free('A',[9,10]),...free('C',[15,16,17])],'op');
+assert.deepEqual(result.map(s=>s.hour),[9,10,15,16,17]);
+console.log('PASS 9 scheduling date/allocation assertions');
